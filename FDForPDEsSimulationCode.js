@@ -58,26 +58,26 @@ function setup()
 
     // Create simulation buttons
     const laplaceButton = createButton('Laplace Simulation');
-    const HeatButton = createButton('Heat Simulation');
-    const WaveButton = createButton('Wave Simulation');
+    const heatButton = createButton('Heat Simulation');
+    const waveButton = createButton('Wave Simulation');
 
     // Size them accordingly
     laplaceButton.size(menuButWidth, menuButHeight);
-    HeatButton.size(menuButWidth, menuButHeight);
-    WaveButton.size(menuButWidth, menuButHeight);
+    heatButton.size(menuButWidth, menuButHeight);
+    waveButton.size(menuButWidth, menuButHeight);
 
     // Place simulation buttons spread out in the center of the screen
     laplaceButton.position(lButPosX, menuButPosY);
-    HeatButton.position(hButPosX, menuButPosY);
-    WaveButton.position(wButPosX, menuButPosY);
+    heatButton.position(hButPosX, menuButPosY);
+    waveButton.position(wButPosX, menuButPosY);
 
     // Stylize the buttons using CSS
     laplaceButton.style('font-size', '20px');   // Increasing font size
     laplaceButton.style('border-radius', '30px');    // Rounding corners
-    HeatButton.style('font-size', '20px');
-    HeatButton.style('border-radius', '30px');
-    WaveButton.style('font-size', '20px');
-    WaveButton.style('border-radius', '30px');
+    heatButton.style('font-size', '20px');
+    heatButton.style('border-radius', '30px');
+    waveButton.style('font-size', '20px');
+    waveButton.style('border-radius', '30px');
 
     // Add hover effect manually since CSS changes takes out original hover behavior
     laplaceButton.mouseOver(() =>
@@ -90,24 +90,45 @@ function setup()
         laplaceButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
     });
 
-    HeatButton.mouseOver(() =>
+    heatButton.mouseOver(() =>
     {
-        HeatButton.style('background-color', 'rgb(140, 170, 180)');
+        heatButton.style('background-color', 'rgb(140, 170, 180)');
     });
 
-    HeatButton.mouseOut(() =>
+    heatButton.mouseOut(() =>
     {
-        HeatButton.style('background-color', 'rgb(230, 230, 230)');
+        heatButton.style('background-color', 'rgb(230, 230, 230)');
     });
 
-    WaveButton.mouseOver(() =>
+    waveButton.mouseOver(() =>
     {
-        WaveButton.style('background-color', 'rgb(140, 170, 180)');
+        waveButton.style('background-color', 'rgb(140, 170, 180)');
     });
 
-    WaveButton.mouseOut(() =>
+    waveButton.mouseOut(() =>
     {
-        WaveButton.style('background-color', 'rgb(230, 230, 230)');
+        waveButton.style('background-color', 'rgb(230, 230, 230)');
+    });
+
+    
+    // Level Changer bassed off of buttons
+
+    laplaceButton.mousePressed(() =>
+    {
+        currentLevel = "laplace";  // Used for draw function for Laplace
+        LaplaceSetup();
+    });
+
+    heatButton.mousePressed(() =>
+    {
+        currentLevel = "heat";  // Used for draw function for Heat
+        HeatSetup();
+    });
+
+    waveButton.mousePressed(() =>
+    {
+        currentLevel = "wave";  // Used for draw function for Wave
+        WaveSetup();
     });
 }
 
