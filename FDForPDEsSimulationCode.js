@@ -37,7 +37,7 @@ function setup()
     // Generate starting menu canvas
     canvas = createCanvas(canvasWidth, canvasHeight);
     canvas.position(canvasPosX, canvasPosY);
-    canvas.background(0, 120, 80);  // Forest Teal color
+    canvas.background(0, 100, 160);  // Light Prussian Blue color
 
     // Title Text
     textAlign(CENTER, CENTER);  // Will place text's anchor in center for both title AND author text
@@ -57,7 +57,7 @@ function setup()
     const HeatButton = createButton('Heat Simulation');
     const WaveButton = createButton('Wave Simulation');
 
-    // Size them nicely
+    // Size them accordingly
     laplaceButton.size(menuButWidth, menuButHeight);
     HeatButton.size(menuButWidth, menuButHeight);
     WaveButton.size(menuButWidth, menuButHeight);
@@ -66,6 +66,46 @@ function setup()
     laplaceButton.position(lButPosX, menuButPosY);
     HeatButton.position(hButPosX, menuButPosY);
     WaveButton.position(wButPosX, menuButPosY);
+
+    // Stylize the buttons using CSS
+    laplaceButton.style('font-size', '20px');   // Increasing font size
+    laplaceButton.style('border-radius', '30px');    // Rounding corners
+    HeatButton.style('font-size', '20px');
+    HeatButton.style('border-radius', '30px');
+    WaveButton.style('font-size', '20px');
+    WaveButton.style('border-radius', '30px');
+
+    // Add hover effect manually since CSS changes takes out original hover behavior
+    laplaceButton.mouseOver(() =>
+    {
+        laplaceButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
+    });
+
+    laplaceButton.mouseOut(() =>
+    {
+        laplaceButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+    });
+
+    HeatButton.mouseOver(() =>
+    {
+        HeatButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
+    });
+
+    HeatButton.mouseOut(() =>
+    {
+        HeatButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+    });
+
+    WaveButton.mouseOver(() =>
+    {
+        WaveButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
+    });
+
+    WaveButton.mouseOut(() =>
+    {
+        WaveButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+    });
+
 }
 
 function draw()
