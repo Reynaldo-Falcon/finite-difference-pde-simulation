@@ -1,0 +1,16 @@
+# Ignore the following:
+
+# VS Code settings
+.vscode/
+
+# Ignore node_modules if npm becomes relevant
+node_modules/
+
+# Ignore Mac junk files
+.DS_Store
+
+# Ignore Windows junk files
+Thumbs.db
+
+# Ignore log files
+*.log
