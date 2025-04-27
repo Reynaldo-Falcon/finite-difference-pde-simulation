@@ -14,7 +14,7 @@ function setup()
 {
 // Generate starting menu canvas
 canvas = createCanvas(canvasWidth,canvasHeight);
-canvas.background(0,255,200,100);  // Dark Teal color
+canvas.background(0,180,100);  // Dark Teal color
 
 // Create simulation buttons
 const laplaceButton = createButton('Laplace Simulation');
@@ -30,7 +30,7 @@ WaveButton.size(menuButWidth, menuButHeight);
 laplaceButton.position(200,200);
 HeatButton.position(0,0);
 WaveButton.position(0,0);
-laplaceButton.size(150, 50);  
+laplaceButton.size(150, 50);
 
 }
 
