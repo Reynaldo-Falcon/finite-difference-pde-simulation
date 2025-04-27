@@ -15,20 +15,20 @@
 
 // Menu buttons related
 
-    const menuButWidth = 150;
-    const menuButHeight = 50;
+    const menuButWidth = 200;
+    const menuButHeight = 100;
 
     // Adding this to button position makes the buttons anchor from the center of itself
     const menuButMiddleAnchorX = -menuButWidth/2;
     const menuButMiddleAnchorY = -menuButHeight/2;
 
     // Definite positions for each button based off of canvas size and position
-    const lButPosX = canvasPosX + menuButMiddleAnchorX + canvasWidth*(3/4);    // Third Button
-    const hButPosX = canvasPosX + menuButMiddleAnchorX + canvasWidth*(1/4);    // First Button
-    const wButPosX = canvasPosX + menuButMiddleAnchorX + canvasWidth*(2/4);    // Second Button
+    const lButPosX = canvasPosX + menuButMiddleAnchorX + canvasWidth*(4/5);    // Third Button
+    const hButPosX = canvasPosX + menuButMiddleAnchorX + canvasWidth*(1/5);    // First Button
+    const wButPosX = canvasPosX + menuButMiddleAnchorX + canvasWidth*(1/2);    // Second Button
 
     // They all have the same y coordinate!
-    const menuButPosY = canvasPosY + menuButMiddleAnchorY + canvasHeight*(3/5);
+    const menuButPosY = canvasPosY + menuButMiddleAnchorY + (canvasHeight*(3/5) + 15);
 
 // ------Program------
 
@@ -42,14 +42,14 @@ function setup()
     // Title Text
     textAlign(CENTER, CENTER);  // Will place text's anchor in center for both title AND author text
     textSize(48);
-    fill(255);
+    fill(255);  // White text
     text("Finite Difference Method", textAnchorX, textAnchorY);
     text("for", textAnchorX, textAnchorY + 45);
     text("PDE Simulations", textAnchorX, textAnchorY + 90);
 
     // Author Text
     textSize(24);
-    fill(200);
+    fill(200);  // Slightly gray text
     text("Reynaldo J. Falcón Torres & Edgardo A. Diaz Sandoval ", textAnchorX, textAnchorY + 140);
 
     // Create simulation buttons
