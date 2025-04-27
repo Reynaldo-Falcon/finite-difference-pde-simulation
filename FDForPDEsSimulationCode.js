@@ -88,22 +88,22 @@ function setup()
 
     HeatButton.mouseOver(() =>
     {
-        HeatButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
+        HeatButton.style('background-color', 'rgb(140, 170, 180)');
     });
 
     HeatButton.mouseOut(() =>
     {
-        HeatButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+        HeatButton.style('background-color', 'rgb(230, 230, 230)');
     });
 
     WaveButton.mouseOver(() =>
     {
-        WaveButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
+        WaveButton.style('background-color', 'rgb(140, 170, 180)');
     });
 
     WaveButton.mouseOut(() =>
     {
-        WaveButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+        WaveButton.style('background-color', 'rgb(230, 230, 230)');
     });
 
 }
