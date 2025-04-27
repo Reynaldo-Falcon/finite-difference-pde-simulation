@@ -30,6 +30,10 @@
     // They all have the same y coordinate!
     const menuButPosY = canvasPosY + menuButMiddleAnchorY + (canvasHeight*(3/5) + 15);
 
+// Level Changer related
+
+    let currentLevel = "menu"; // Other options are "heat", "laplace", and "wave"
+
 // ------Program------
 
 function setup()
@@ -105,7 +109,6 @@ function setup()
     {
         WaveButton.style('background-color', 'rgb(230, 230, 230)');
     });
-
 }
 
 function draw()
@@ -113,11 +116,20 @@ function draw()
 
 }
 
-function LaplaceSimulation()
+function LaplaceSetup()
 {}
 
-function WaveSimulation()
+function LaplaceDraw()
 {}
 
-function HeatSimulation()
+function WaveSetup()
+{}
+
+function WaveDraw()
+{}
+
+function HeatSetup()
+{}
+
+function HeatDraw()
 {}
