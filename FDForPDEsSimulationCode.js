@@ -134,7 +134,19 @@ function setup()
 
 function draw()
 {
-
+    // These if statements allow the logic so that ONLY current level to be drawn
+    if(currentLevel == "laplace")
+    {
+        LaplaceDraw();
+    }
+    else if(currentLevel == "heat")
+    {
+        HeatDraw();
+    }
+    else if(currentLevel == "wave")
+    {
+        WaveDraw();
+    }
 }
 
 function LaplaceSetup()
