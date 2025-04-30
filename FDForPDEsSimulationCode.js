@@ -33,10 +33,33 @@
 // Level Changer related
 
     let currentLevel = "menu"; // Other options are "heat", "laplace", and "wave"
+    let UIArray = []; // This will hold all UI elements to clear out later
 
 // ------Program------
 
 function setup()
+{
+    MenuSetup();
+}
+
+function draw()
+{
+    // These if statements allow the logic so that ONLY current level to be drawn
+    if(currentLevel == "laplace")
+    {
+        LaplaceDraw();
+    }
+    else if(currentLevel == "heat")
+    {
+        HeatDraw();
+    }
+    else if(currentLevel == "wave")
+    {
+        WaveDraw();
+    }
+}
+
+function MenuSetup()
 {
     // Generate starting menu canvas
     canvas = createCanvas(canvasWidth, canvasHeight);
@@ -60,6 +83,12 @@ function setup()
     const laplaceButton = createButton('Laplace Simulation');
     const heatButton = createButton('Heat Simulation');
     const waveButton = createButton('Wave Simulation');
+
+    // Prepare UI array for when switching levels
+    UIArray.push(laplaceButton);    // Exclude text(), those go away when canvas changes automatically
+    UIArray.push(heatButton);
+    UIArray.push(waveButton);
+
 
     // Size them accordingly
     laplaceButton.size(menuButWidth, menuButHeight);
@@ -115,38 +144,24 @@ function setup()
 
     laplaceButton.mousePressed(() =>
     {
+        UIArrayClear()
         currentLevel = "laplace";  // Used for draw function for Laplace
         LaplaceSetup();
     });
 
     heatButton.mousePressed(() =>
     {
+        UIArrayClear()
         currentLevel = "heat";  // Used for draw function for Heat
         HeatSetup();
     });
 
     waveButton.mousePressed(() =>
     {
+        UIArrayClear()
         currentLevel = "wave";  // Used for draw function for Wave
         WaveSetup();
     });
-}
-
-function draw()
-{
-    // These if statements allow the logic so that ONLY current level to be drawn
-    if(currentLevel == "laplace")
-    {
-        LaplaceDraw();
-    }
-    else if(currentLevel == "heat")
-    {
-        HeatDraw();
-    }
-    else if(currentLevel == "wave")
-    {
-        WaveDraw();
-    }
 }
 
 function LaplaceSetup()
@@ -166,3 +181,12 @@ function HeatSetup()
 
 function HeatDraw()
 {}
+
+function UIArrayClear()
+{
+    for(let i of UIArray)
+    {
+        i.remove(); // Removes UI elements when called
+    }
+    UIArray = [];   // Resets array
+}
