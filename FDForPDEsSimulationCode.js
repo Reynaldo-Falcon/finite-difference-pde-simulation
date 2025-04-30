@@ -165,19 +165,52 @@ function MenuSetup()
 }
 
 function LaplaceSetup()
-{}
+{
+    // Generate starting Laplace setup canvas
+    canvas = createCanvas(canvasWidth, canvasHeight);
+    canvas.position(canvasPosX, canvasPosY);
+    canvas.background(30);  // Dark gray color
+
+    // Title Text
+    textAlign(CENTER, CENTER);  // Will place text's anchor in center
+    textSize(48);
+    fill(255);  // White text
+    text("FDM Simulation in Laplace Eq.", textAnchorX, textAnchorY);
+}
 
 function LaplaceDraw()
 {}
 
 function WaveSetup()
-{}
+{
+    // Generate starting Wave setup canvas
+    canvas = createCanvas(canvasWidth, canvasHeight);
+    canvas.position(canvasPosX, canvasPosY);
+    canvas.background(30);  // Dark gray color
+
+    // Title Text
+    textAlign(CENTER, CENTER);  // Will place text's anchor in center
+    textSize(48);
+    fill(255);  // White text
+    text("FDM Simulation in Wave Eq.", textAnchorX, textAnchorY);
+}
 
 function WaveDraw()
 {}
 
 function HeatSetup()
-{}
+{
+    // Generate starting Heat setup canvas
+    canvas = createCanvas(canvasWidth, canvasHeight);
+    canvas.position(canvasPosX, canvasPosY);
+    canvas.background(30);  // Dark gray color
+
+    // Title Text
+    textAlign(CENTER, CENTER);  // Will place text's anchor in center
+    textSize(48);
+    fill(255);  // White text
+    text("FDM Simulation in Heat Eq.", textAnchorX, textAnchorY);
+}
 
 function HeatDraw()
 {}
