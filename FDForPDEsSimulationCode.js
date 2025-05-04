@@ -35,6 +35,12 @@
     let currentLevel = "menu"; // Other options are "heat", "laplace", and "wave"
     let UIArray = []; // This will hold all UI elements to clear out later
 
+    // Back to menu button size and positions
+    const btmButWidth = 100;
+    const btmButHeight = 65;
+    const btmButPosX = 30;
+    const btmButPosY = canvasHeight - btmButHeight - 30;    // Places button anchored from its bottom
+
 // ------Program------
 
 function setup()
@@ -57,6 +63,7 @@ function draw()
     {
         WaveDraw();
     }
+    // Menu doesn't need a draw function
 }
 
 function MenuSetup()
@@ -176,6 +183,8 @@ function LaplaceSetup()
     textSize(48);
     fill(255);  // White text
     text("FDM Simulation in Laplace Eq.", textAnchorX, textAnchorY);
+
+    BackToMenuButton(); // Generates the button
 }
 
 function LaplaceDraw()
@@ -193,6 +202,8 @@ function WaveSetup()
     textSize(48);
     fill(255);  // White text
     text("FDM Simulation in Wave Eq.", textAnchorX, textAnchorY);
+
+    BackToMenuButton(); // Generates the button
 }
 
 function WaveDraw()
@@ -210,6 +221,8 @@ function HeatSetup()
     textSize(48);
     fill(255);  // White text
     text("FDM Simulation in Heat Eq.", textAnchorX, textAnchorY);
+
+    BackToMenuButton(); // Generates the button
 }
 
 function HeatDraw()
@@ -222,4 +235,38 @@ function UIArrayClear()
         i.remove(); // Removes UI elements when called
     }
     UIArray = [];   // Resets array
+}
+
+function BackToMenuButton()
+{
+    // Function hosts creation of "back-to-menu" button that's important on each simulation canvas
+
+    const btmButton = createButton('Menu');
+
+    UIArray.push(btmButton);    // Include in UI array for deletion later
+    
+    // Position, size, and style
+    btmButton.size(btmButWidth, btmButHeight);
+    btmButton.position(btmButPosX, btmButPosY);
+    btmButton.style('font-size', '20px');       // Increasing font size
+    btmButton.style('border-radius', '30px');   // Rounding corners
+
+    // Mouse hover behavior for button
+    btmButton.mouseOver(() =>
+        {
+            btmButton.style('background-color', 'rgb(100, 95, 85)'); // Dark brown
+        });
+    
+    btmButton.mouseOut(() =>
+        {
+            btmButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+        });
+    
+    // Behavior when clicked
+    btmButton.mousePressed(() =>
+        {
+            UIArrayClear()          // Clear button
+            currentLevel = "menu";  // Used for draw function for menu
+            MenuSetup();            // Return to menu
+        });
 }
