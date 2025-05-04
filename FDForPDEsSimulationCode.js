@@ -3,7 +3,7 @@
 // Canvas related
 
     let canvas;
-    const canvasWidth = 900;   // Fullscreen in my computer...
+    const canvasWidth = 900;
     const canvasHeight = 600 ;
     const canvasPosX = 0;
     const canvasPosY = 0;
@@ -40,6 +40,20 @@
     const btmButHeight = 65;
     const btmButPosX = 30;
     const btmButPosY = canvasHeight - btmButHeight - 30;    // Places button anchored from its bottom
+
+// Heat equation related
+
+    let tempA = []; // Actual Temperature
+    let tempB = []; // Next Temperature
+
+    // Cylinder locations
+    const cylPosX = canvasWidth/2;      // Position X is same for both cylinders
+    const cylPosYA = canvasHeight*(1/4) + 10;    // Analytic Solution Cylinder Y position
+    const cylPosYN = canvasHeight*(3/5) + 20;    // Numeric Solution Cylinder Y position
+    const cylLength = 500;
+    const cylRadX = 15;
+    const cylRadY = 75;
+
 
 // ------Program------
 
@@ -220,13 +234,31 @@ function HeatSetup()
     textAlign(CENTER, CENTER);  // Will place text's anchor in center
     textSize(48);
     fill(255);  // White text
-    text("FDM Simulation in Heat Eq.", textAnchorX, textAnchorY);
+    text("FDM Simulation in Heat Eq.", textAnchorX, textAnchorY-30);
 
     BackToMenuButton(); // Generates the button
+
+    // Initial Conditions of temperature arrays of LENGTH 90
+    tempA[0] = 0;
+    tempA[89] = 0;
+
+    for(let i = 0; i < (tempA.length-2); i++)
+    {
+        tempA[i] = 255; // Everything else begins at max temperature
+    }
+
+    tempB[0] = 0;
+    tempB[89] = 0;
+
+    // Draw Cylinders for simulation
+    DrawCylinder(cylPosX, cylPosYA, cylLength, cylRadX, cylRadY);
+    DrawCylinder(cylPosX, cylPosYN, cylLength, cylRadX, cylRadY);
 }
 
 function HeatDraw()
-{}
+{
+    
+}
 
 function UIArrayClear()
 {
@@ -269,4 +301,35 @@ function BackToMenuButton()
             currentLevel = "menu";  // Used for draw function for menu
             MenuSetup();            // Return to menu
         });
+}
+
+function DrawCylinder(cylPosX, cylPosY, cylLength, cylRadiusX, cylRadiusY)
+{
+    // Function used to generate cylinders for heat 1D heat simulation
+
+    // Commonly used constants
+    const cylLenOffsetX = cylLength/2;
+    const cylDiaX = cylRadiusX*2;
+    const cylDiaY = cylRadiusY*2;
+
+    // Place cylinder centered at cylPosX and cylPosY
+    push();
+
+    stroke(255);
+    noFill();
+    translate(cylPosX, cylPosY);
+
+    // Left ellipse
+    ellipse(-cylLenOffsetX, 0, cylDiaX, cylDiaY);  // Generate ellipse
+
+    // Right ellipse
+    ellipse(cylLenOffsetX, 0, cylDiaX, cylDiaY);   // Generate ellipse
+
+    // Top Line
+    line(-cylLenOffsetX, cylRadiusY, cylLenOffsetX, cylRadiusY);
+
+    // Bottom Line
+    line(-cylLenOffsetX, -cylRadiusY, cylLenOffsetX, -cylRadiusY);
+
+    pop();
 }
