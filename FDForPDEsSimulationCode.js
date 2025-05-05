@@ -78,6 +78,22 @@
     const heatDX = 1;   // Space step
     const heatDT = 0.2;   // Time step
 
+
+// Wave equation related
+    
+    // Graph details
+    let nPoints = 99;  // Number of spatial points
+    let stringLength = 1;
+    let waveDX =  1;
+    let waveDT = 0.1;
+    let waveA = 1;  // Wave Speed
+
+    // Altitude Arrays
+    let altiP = [];     // Past time step
+    let altiC = [];     // Current time step
+    let altiF = [];     // Future time step
+
+
 // ------Program------
 
 function setup()
@@ -129,39 +145,39 @@ function MenuSetup()
     const waveButton = createButton('Wave Simulation');
 
     // Prepare UI array for when switching levels
-    UIArray.push(laplaceButton);    // Exclude text(), those go away when canvas changes automatically
+    //UIArray.push(laplaceButton);    // Exclude text(), those go away when canvas changes automatically
     UIArray.push(heatButton);
     UIArray.push(waveButton);
 
 
     // Size them accordingly
-    laplaceButton.size(menuButWidth, menuButHeight);
+    //laplaceButton.size(menuButWidth, menuButHeight);
     heatButton.size(menuButWidth, menuButHeight);
     waveButton.size(menuButWidth, menuButHeight);
 
     // Place simulation buttons spread out in the center of the screen
-    laplaceButton.position(lButPosX, menuButPosY);
+    //laplaceButton.position(lButPosX, menuButPosY);
     heatButton.position(hButPosX, menuButPosY);
-    waveButton.position(wButPosX, menuButPosY);
+    waveButton.position(lButPosX, menuButPosY);
 
     // Stylize the buttons using CSS
-    laplaceButton.style('font-size', '20px');   // Increasing font size
-    laplaceButton.style('border-radius', '30px');    // Rounding corners
+    //laplaceButton.style('font-size', '20px');   // Increasing font size
+    //laplaceButton.style('border-radius', '30px');    // Rounding corners
     heatButton.style('font-size', '20px');
     heatButton.style('border-radius', '30px');
     waveButton.style('font-size', '20px');
     waveButton.style('border-radius', '30px');
 
     // Add hover effect manually since CSS changes takes out original hover behavior
-    laplaceButton.mouseOver(() =>
-    {
-        laplaceButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
-    });
+    // laplaceButton.mouseOver(() =>
+    // {
+    //     laplaceButton.style('background-color', 'rgb(140, 170, 180)'); // Darker sea blue
+    // });
 
-    laplaceButton.mouseOut(() =>
-    {
-        laplaceButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
-    });
+    // laplaceButton.mouseOut(() =>
+    // {
+    //     laplaceButton.style('background-color', 'rgb(230, 230, 230)'); // Gray-white
+    // });
 
     heatButton.mouseOver(() =>
     {
@@ -186,12 +202,12 @@ function MenuSetup()
     
     // Level Changer bassed off of buttons
 
-    laplaceButton.mousePressed(() =>
-    {
-        UIArrayClear()
-        currentLevel = "laplace";  // Used for draw function for Laplace
-        LaplaceSetup();
-    });
+    // laplaceButton.mousePressed(() =>
+    // {
+    //     UIArrayClear()
+    //     currentLevel = "laplace";  // Used for draw function for Laplace
+    //     LaplaceSetup();
+    // });
 
     heatButton.mousePressed(() =>
     {
@@ -234,17 +250,73 @@ function WaveSetup()
     canvas.position(canvasPosX, canvasPosY);
     canvas.background(30);  // Dark gray color
 
-    // Title Text
-    textAlign(CENTER, CENTER);  // Will place text's anchor in center
-    textSize(48);
-    fill(255);  // White text
-    text("FDM Simulation in Wave Eq.", textAnchorX, textAnchorY);
+    DrawEverythingWave();
 
     BackToMenuButton(); // Generates the button
+
+    // Initial Conditions of altitude arrays
+    altiP[0] = 0;
+    altiP[99] = 0;
+    altiC[0] = 0;
+    altiC[99] = 0;
+    altiF[0] = 0;
+    altiF[99] = 0;
+
+    // Initialize t_0
+    for(let i = 0; i < altiP.length; i++)
+    {
+        altiP[i] = sin(2*PI*i*waveDX);
+    }
+
+    // Initialize t_1
+    for(let i = 1; i < altiP.length-1; i++)
+    {
+        altiC[i] = altiP[i] + (((waveDT*waveA/waveDX)**2)/2)*(altiP[i+1] - 2*altiP[i] + altiP[i-1]);
+    }
+
 }
 
 function WaveDraw()
-{}
+{
+    //-----Numerical Solution-----
+
+    background(255);         // Clear screen each frame
+    DrawEverythingWave();
+
+    push();
+    stroke(0, 0, 255);        // Set line color (blue)
+    noFill();                // Don’t fill under the curve
+  
+    beginShape();
+    for (let i = 0; i < nPoints; i++)
+    {
+        let x = map(i, 0, nPoints - 1, 50, width - 50);  // match full domain
+        let y = map(altiP[i], -1, 1, height - 50, 50);
+        vertex(x, y);
+    }
+      
+    endShape();
+    pop();
+    console.log('altiP:', altiP);
+
+    // Calculate next altitude:
+    for(let i = 1; i < (altiC.length-1); i++)
+    {
+        altiF[i] = -2*altiC[i] + altiP[i] + ((waveA*waveDT/waveDX)**2)*(altiC[i+1] - 2*altiC[i] + altiC[i-1]);    // Numerical Sol.
+    }
+    
+    // altiP takes the new calculated values for altiC
+    for(let i = 0; i < altiC.length; i++)
+    {
+        altiP[i] = altiC[i];
+    }
+
+    // altiC takes the new calculated values for altiF
+    for(let i = 0; i < altiC.length; i++)
+    {
+        altiC[i] = altiF[i];
+    }
+}
 
 function HeatSetup()
 {
@@ -342,7 +414,6 @@ function HeatDraw()
     for(let i = 0; i < tempA.length; i++)
     {
         tempA[i] = tempB[i];
-        console.log("i = " + i + ": " + tempA[i]);
     }
 }
 
@@ -440,11 +511,30 @@ function DrawEverythingHeat()
 
     // Text indicating solution type next to cylinders
     push();
-    //textAlign(LEFT, TOP);  // Will place text's anchor in center
     textSize(20);
     fill(255);  // White text
     text("Analytic Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYA);
     text("Numeric Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYN);
     text("<< Error (Ana. - Num.)", cylPosX + (cylLength/2) + cylRadX + 75, (pixOffSetYN + cylRadY*3));
+    pop();
+}
+
+function DrawEverythingWave()
+{
+    // This function helps redraw everything in wave simulation for easy graph updates
+
+    // Title Text
+    textAlign(CENTER, CENTER);  // Will place text's anchor in center
+    textSize(48);
+    fill(255);  // White text
+    text("FDM Simulation in Wave Eq.", textAnchorX, textAnchorY);
+
+    // Text indicating solution type next to graphs
+    push();
+    textSize(20);
+    fill(255);  // White text
+    text("Analytic Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYA);
+    text("Numeric Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYN);
+    //text("<< Error (Ana. - Num.)", cylPosX + (cylLength/2) + cylRadX + 75, (pixOffSetYN + cylRadY*3));
     pop();
 }
