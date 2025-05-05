@@ -93,6 +93,8 @@
     let altiC = [];     // Current time step
     let altiF = [];     // Future time step
 
+    // Extra variable
+    let time = 0;
 
 // ------Program------
 
@@ -245,78 +247,195 @@ function LaplaceDraw()
 
 function WaveSetup()
 {
-    // Generate starting Wave setup canvas
     canvas = createCanvas(canvasWidth, canvasHeight);
     canvas.position(canvasPosX, canvasPosY);
-    canvas.background(30);  // Dark gray color
+    background(30);
 
     DrawEverythingWave();
+    BackToMenuButton();
 
-    BackToMenuButton(); // Generates the button
+    waveDX = stringLength / (nPoints - 1);  // Better spacing
+    waveDT = 0.9 * waveDX / waveA;  // Courant condition for stability
+    time = 0;
 
-    // Initial Conditions of altitude arrays
-    altiP[0] = 0;
-    altiP[99] = 0;
-    altiC[0] = 0;
-    altiC[99] = 0;
-    altiF[0] = 0;
-    altiF[99] = 0;
+    let r = waveA * waveDT / waveDX;
+    console.log("Courant number r =", r);   // Check condition
 
-    // Initialize t_0
-    for(let i = 0; i < altiP.length; i++)
+    altiP = [];
+    altiC = [];
+    altiF = [];
+
+    for (let i = 0; i < nPoints; i++)
     {
-        altiP[i] = sin(2*PI*i*waveDX);
+        let x = i * waveDX;
+        altiP[i] = sin(2*PI*x); // Initial displacement
+        altiC[i] = 0;
+        altiF[i] = 0;
     }
 
-    // Initialize t_1
-    for(let i = 1; i < altiP.length-1; i++)
+    for (let i = 1; i < nPoints - 1; i++)
     {
-        altiC[i] = altiP[i] + (((waveDT*waveA/waveDX)**2)/2)*(altiP[i+1] - 2*altiP[i] + altiP[i-1]);
+        let lap = altiP[i + 1] - 2 * altiP[i] + altiP[i - 1];
+        altiC[i] = altiP[i] + (r**2)*lap/2; // First step in time
     }
 
+    altiP[0] = altiP[nPoints - 1] = 0;
+    altiC[0] = altiC[nPoints - 1] = 0;
 }
+
+
+// function WaveSetup()
+// {
+//     // Generate starting Wave setup canvas
+//     canvas = createCanvas(canvasWidth, canvasHeight);
+//     canvas.position(canvasPosX, canvasPosY);
+//     canvas.background(30);  // Dark gray color
+
+//     DrawEverythingWave();
+
+//     BackToMenuButton(); // Generates the button
+
+//     // Initial Conditions of altitude arrays
+//     altiP[0] = 0;
+//     altiP[99] = 0;
+//     altiC[0] = 0;
+//     altiC[99] = 0;
+//     altiF[0] = 0;
+//     altiF[99] = 0;
+
+//     // Initialize t_0
+//     for(let i = 0; i < altiP.length; i++)
+//     {
+//         altiP[i] = sin(2*PI*i*waveDX);
+//     }
+
+//     // Initialize t_1
+//     for(let i = 1; i < altiP.length-1; i++)
+//     {
+//         altiC[i] = altiP[i] + (((waveDT*waveA/waveDX)**2)/2)*(altiP[i+1] - 2*altiP[i] + altiP[i-1]);
+//     }
+
+// }
 
 function WaveDraw()
 {
-    //-----Numerical Solution-----
-
-    background(255);         // Clear screen each frame
+    background(30);
     DrawEverythingWave();
-
-    push();
-    stroke(0, 0, 255);        // Set line color (blue)
-    noFill();                // Don’t fill under the curve
   
+    const yTop = 100;
+    const yBottom = height - 100;
+    const r = waveA * waveDT / waveDX;
+  
+    // Left Side
+    push();
+    noFill();
+  
+    // Numerical in blue
+    stroke(100, 180, 255);
     beginShape();
     for (let i = 0; i < nPoints; i++)
     {
-        let x = map(i, 0, nPoints - 1, 50, width - 50);  // match full domain
-        let y = map(altiP[i], -1, 1, height - 50, 50);
+        let x = map(i, 0, nPoints - 1, 50, width / 2 - 25);
+        let y = map(altiC[i], -1, 1, yBottom, yTop);
         vertex(x, y);
     }
-      
+    endShape();
+  
+    // Analytic in red
+    stroke(255, 80, 80);
+    beginShape();
+    for (let i = 0; i < nPoints; i++)
+    {
+        let xVal = i / (nPoints - 1);
+        let uAnalytic = sin(2 * PI * xVal) * cos(2 * PI * waveA * time);
+        let x = map(i, 0, nPoints - 1, 50, width / 2 - 25);
+        let y = map(uAnalytic, -1, 1, yBottom, yTop);
+        vertex(x, y);
+    }
     endShape();
     pop();
-    console.log('altiP:', altiP);
-
-    // Calculate next altitude:
-    for(let i = 1; i < (altiC.length-1); i++)
-    {
-        altiF[i] = -2*altiC[i] + altiP[i] + ((waveA*waveDT/waveDX)**2)*(altiC[i+1] - 2*altiC[i] + altiC[i-1]);    // Numerical Sol.
+  
+    // Right side error in green
+    push();
+    stroke(0, 255, 0);
+    noFill();
+    beginShape();
+    for (let i = 0; i < nPoints; i++) {
+      let xVal = i / (nPoints - 1);
+      let uAnalytic = sin(2 * PI * xVal) * cos(2 * PI * waveA * time);
+      let uNumeric = altiC[i]; // Using current step for error
+  
+      let error = uAnalytic - uNumeric;
+      let x = map(i, 0, nPoints - 1, width / 2 + 25, width - 50);
+      let y = map(error, -0.5, 0.5, yBottom, yTop); // Looser bounds for error
+      vertex(x, y);
     }
-    
-    // altiP takes the new calculated values for altiC
-    for(let i = 0; i < altiC.length; i++)
+    endShape();
+    pop();
+  
+    // Finite Difference Update
+    for (let i = 1; i < nPoints - 1; i++)
+    {
+        altiF[i] = 2*altiC[i] - altiP[i] + (r**2) * (altiC[i + 1] - 2*altiC[i] + altiC[i - 1]);
+    }
+  
+    altiF[0] = altiF[nPoints - 1] = 0;
+  
+    for (let i = 0; i < nPoints; i++)
     {
         altiP[i] = altiC[i];
-    }
-
-    // altiC takes the new calculated values for altiF
-    for(let i = 0; i < altiC.length; i++)
-    {
         altiC[i] = altiF[i];
     }
-}
+  
+    time += waveDT; // Go forward in time for analytic solution to follow numerical
+  }
+  
+  
+  
+  
+  
+
+// function WaveDraw()
+// {
+//     //-----Numerical Solution-----
+
+//     background(255);         // Clear screen each frame
+//     DrawEverythingWave();
+
+//     push();
+//     stroke(0, 0, 255);        // Set line color (blue)
+//     noFill();                // Don’t fill under the curve
+  
+//     beginShape();
+//     for (let i = 0; i < nPoints; i++)
+//     {
+//         let x = map(i, 0, nPoints - 1, 50, width - 50);  // match full domain
+//         let y = map(altiP[i], -1, 1, height - 50, 50);
+//         vertex(x, y);
+//     }
+      
+//     endShape();
+//     pop();
+//     console.log('altiP:', altiP);
+
+//     // Calculate next altitude:
+//     for(let i = 1; i < (altiC.length-1); i++)
+//     {
+//         altiF[i] = -2*altiC[i] + altiP[i] + ((waveA*waveDT/waveDX)**2)*(altiC[i+1] - 2*altiC[i] + altiC[i-1]);    // Numerical Sol.
+//     }
+    
+//     // altiP takes the new calculated values for altiC
+//     for(let i = 0; i < altiC.length; i++)
+//     {
+//         altiP[i] = altiC[i];
+//     }
+
+//     // altiC takes the new calculated values for altiF
+//     for(let i = 0; i < altiC.length; i++)
+//     {
+//         altiC[i] = altiF[i];
+//     }
+// }
 
 function HeatSetup()
 {
@@ -527,14 +646,14 @@ function DrawEverythingWave()
     textAlign(CENTER, CENTER);  // Will place text's anchor in center
     textSize(48);
     fill(255);  // White text
-    text("FDM Simulation in Wave Eq.", textAnchorX, textAnchorY);
+    text("FDM Simulation in Wave Eq.", textAnchorX, textAnchorY-20);
 
     // Text indicating solution type next to graphs
     push();
     textSize(20);
     fill(255);  // White text
-    text("Analytic Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYA);
-    text("Numeric Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYN);
+    text("Analytic Solution", textAnchorX, textAnchorY + 475);
+    text("Numeric Solution", textAnchorX, textAnchorY + 475);
     //text("<< Error (Ana. - Num.)", cylPosX + (cylLength/2) + cylRadX + 75, (pixOffSetYN + cylRadY*3));
     pop();
 }
