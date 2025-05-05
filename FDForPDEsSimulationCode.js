@@ -62,6 +62,11 @@
     const pixOffSetYA = cylPosYA - 65;
     const pixOffSetYN = cylPosYN - 65;
 
+    // Numerical method constants
+    const heatK = 1;    // Thermal diffusivity
+    const heatDX = 1;   // Space step
+    const heatDT = 0.2;   // Time step
+
 // ------Program------
 
 function setup()
@@ -249,7 +254,7 @@ function HeatSetup()
     tempA[0] = 0;
     tempA[89] = 0;
 
-    for(let i = 0; i < (tempA.length-2); i++)
+    for(let i = 1; i < (tempA.length-1); i++)
     {
         tempA[i] = 255; // Everything else begins at max temperature
     }
@@ -265,27 +270,56 @@ function HeatSetup()
 function HeatDraw()
 {
     // Analytical Solution
+
+    // Calculate next temp:
+    // for(let i = 0; i < 26; i++)
+    // {
+    //     for(let j = 0; j < tempA.length; j++)
+    //     {
+    //         push();
+    //         noStroke();
+    //         fill(255,0,255);    // Purple
+    //         rect((pixOffSetX + j*pixSide), (pixOffSetYA + i*pixSide), pixSide, pixSide);
+    //         pop();
+    //     }
+    // }
+
+    // Paint pixels:
+
     // for()
     // {}
 
     // Numerical Solution
+
+    // Paint pixels: (starts with initial conditions done)
     for(let i = 0; i < 26; i++)
     {
         for(let j = 0; j < tempA.length; j++)
         {
             push();
             noStroke();
-            fill(255,0,255);    // Purple
+            fill(tempA[j], 0, (255-tempA[j]));
             rect((pixOffSetX + j*pixSide), (pixOffSetYN + i*pixSide), pixSide, pixSide);
             pop();
 
-            push();
-            noStroke();
-            fill(255,0,255);    // Purple
-            rect((pixOffSetX + j*pixSide), (pixOffSetYA + i*pixSide), pixSide, pixSide);
-            pop();
+
         }
     }
+
+    // Calculate next temp:
+    for(let i = 1; i < (tempA.length-1); i++)
+    {
+        tempB[i] = tempA[i] + (heatK*heatDT/(heatDX**2))*(tempA[i+1] - 2*tempA[i] + tempA[i-1]);
+    }
+    
+    // tempA takes the new calculated values for tempB
+    for(let i = 0; i < tempA.length; i++)
+    {
+        tempA[i] = tempB[i];
+        console.log("i = " + i + ": " + tempA[i]);
+    }
+
+
 }
 
 function UIArrayClear()
