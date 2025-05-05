@@ -52,6 +52,11 @@
     let heatDTCounter = 0;  // Counter to follow along with numerical solution
     let maxN = 30;      // Number of fourier coefficient terms calculated
 
+    // Text Values for both solutions
+    let tempValues = [0, 10, 20, 30, 40, 50, 60, 70, 80, 89];   // These are the values of interest
+    let tempAnalytic = [];
+    let tempNumerical = [];
+
     // Cylinder locations
     const cylPosX = canvasWidth/2;      // Position X is same for both cylinders
     const cylPosYA = canvasHeight*(1/4) + 10;   // Analytic Solution Cylinder Y position
@@ -248,12 +253,6 @@ function HeatSetup()
     canvas.position(canvasPosX, canvasPosY);
     canvas.background(30);  // Dark gray color
 
-    // Title Text
-    textAlign(CENTER, CENTER);  // Will place text's anchor in center
-    textSize(48);
-    fill(255);  // White text
-    text("FDM Simulation in Heat Eq.", textAnchorX, textAnchorY-30);
-
     BackToMenuButton(); // Generates the button
 
     // Initial Conditions of temperature arrays of LENGTH 90
@@ -267,32 +266,28 @@ function HeatSetup()
         tempA[i] = 255; // Everything else begins at max temperature
     }
 
-    // Draw Cylinders for simulation
-    DrawCylinder(cylPosX, cylPosYA, cylLength, cylRadX, cylRadY);
-    DrawCylinder(cylPosX, cylPosYN, cylLength, cylRadX, cylRadY);
+    DrawEverythingHeat();
 }
 
 function HeatDraw()
 {
+    canvas.background(30);
+    DrawEverythingHeat();
+
     //-----Analytical Solution-----
 
     // Calculate next temp:
-    //for(let i = 1; i < (tempA.length-1); i++)
     for(let i = 0; i < tempA.length; i++)
     {
         tempC[i] = 0;
-        for(let n = 1; n < maxN; n++)
+        for(let n = 0; n < maxN; n++)
         {
-            if(n % 2 == 1)  // Only allow the odd terms through
-            {
-                tempC[i] += (1020/PI)*(1/n)*((Math.E)**(-heatK*((PI*n)**2)*heatDTCounter/8100))*sin(n*PI*i/90);
-            }
-
+            // Analytical Sol.
+            tempC[i] += (1020/PI)*(1/(2*n + 1))*((Math.E)**(-heatK*((PI*(2*n + 1))**2)*(heatDTCounter*heatDT)/8100))*sin((2*n + 1)*PI*i/89);    // L changed to 89 in sine for the boundary conditions to truly work!
         }
-
     }
 
-    // Go forwards in time alongside numerical solution
+    // Go forwards in time in the analytical solution alongside numerical solution
     heatDTCounter++;
 
     // Paint pixels:
@@ -308,6 +303,20 @@ function HeatDraw()
         }
     }
     
+
+    // Quick break to save values for texts
+    for(let i = 0; i < tempValues.length; i++)
+    {
+        push();
+        textSize(12);
+        fill(255);  // White text
+        text(tempC[tempValues[i]].toFixed(1), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYA + cylRadY*2 + 10));  // Rounded to first decimal
+        text(tempA[tempValues[i]].toFixed(1), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYN + cylRadY*2 + 10));  // Rounded to first decimal
+        text((tempC[tempValues[i]] - tempA[tempValues[i]]).toFixed(1), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYN + cylRadY*3));  // Rounded to first decimal
+        pop();
+    }
+
+
     //-----Numerical Solution-----
 
     // Paint pixels: (starts with initial conditions done)
@@ -326,7 +335,7 @@ function HeatDraw()
     // Calculate next temp:
     for(let i = 1; i < (tempA.length-1); i++)
     {
-        tempB[i] = tempA[i] + (heatK*heatDT/(heatDX**2))*(tempA[i+1] - 2*tempA[i] + tempA[i-1]);
+        tempB[i] = tempA[i] + (heatK*heatDT/(heatDX**2))*(tempA[i+1] - 2*tempA[i] + tempA[i-1]);    // Numerical Sol.
     }
     
     // tempA takes the new calculated values for tempB
@@ -412,5 +421,30 @@ function DrawCylinder(cylPosX, cylPosY, cylLength, cylRadiusX, cylRadiusY)
     // Bottom Line
     line(-cylLenOffsetX, -cylRadiusY, cylLenOffsetX, -cylRadiusY);
 
+    pop();
+}
+
+function DrawEverythingHeat()
+{
+    // This function helps redraw everything in heat simulation for easy value update under the graphs
+
+    // Title Text
+    textAlign(CENTER, CENTER);  // Will place text's anchor in center
+    textSize(48);
+    fill(255);  // White text
+    text("FDM Simulation in Heat Eq.", textAnchorX, textAnchorY-30);
+
+    // Draw Cylinders for simulation
+    DrawCylinder(cylPosX, cylPosYA, cylLength, cylRadX, cylRadY);
+    DrawCylinder(cylPosX, cylPosYN, cylLength, cylRadX, cylRadY);
+
+    // Text indicating solution type next to cylinders
+    push();
+    //textAlign(LEFT, TOP);  // Will place text's anchor in center
+    textSize(20);
+    fill(255);  // White text
+    text("Analytic Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYA);
+    text("Numeric Solution", cylPosX - (cylLength/2) - cylRadX - 90, cylPosYN);
+    text("<< Error (Ana. - Num.)", cylPosX + (cylLength/2) + cylRadX + 75, (pixOffSetYN + cylRadY*3));
     pop();
 }
