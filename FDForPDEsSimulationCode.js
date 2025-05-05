@@ -54,6 +54,13 @@
     const cylRadX = 15;
     const cylRadY = 75;
 
+    // Pixel variables
+    const pixSide = 5;  // Pixels are 5x5
+    // All pixels start being placed from the left most appropriate point on cylinder
+    const pixOffSetX = cylPosX - 225;
+    // All pixels start being placed from the bottom most appropriate point on cylinder
+    const pixOffSetYA = cylPosYA - 65;
+    const pixOffSetYN = cylPosYN - 65;
 
 // ------Program------
 
@@ -257,7 +264,28 @@ function HeatSetup()
 
 function HeatDraw()
 {
-    
+    // Analytical Solution
+    // for()
+    // {}
+
+    // Numerical Solution
+    for(let i = 0; i < 26; i++)
+    {
+        for(let j = 0; j < tempA.length; j++)
+        {
+            push();
+            noStroke();
+            fill(255,0,255);    // Purple
+            rect((pixOffSetX + j*pixSide), (pixOffSetYN + i*pixSide), pixSide, pixSide);
+            pop();
+
+            push();
+            noStroke();
+            fill(255,0,255);    // Purple
+            rect((pixOffSetX + j*pixSide), (pixOffSetYA + i*pixSide), pixSide, pixSide);
+            pop();
+        }
+    }
 }
 
 function UIArrayClear()
