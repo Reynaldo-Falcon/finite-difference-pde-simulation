@@ -44,13 +44,18 @@
 // Heat equation related
 
     // Numerical method time step n (A) and n+1 (B)
-    let tempA = []; // Actual Temperature
-    let tempB = []; // Next Temperature
+    let tempA = [];     // Actual Temperature
+    let tempB = [];     // Next Temperature
+
+    // Analytical solution time step
+    let tempC = [];     // Only temperature array needed
+    let heatDTCounter = 0;  // Counter to follow along with numerical solution
+    let maxN = 30;      // Number of fourier coefficient terms calculated
 
     // Cylinder locations
     const cylPosX = canvasWidth/2;      // Position X is same for both cylinders
-    const cylPosYA = canvasHeight*(1/4) + 10;    // Analytic Solution Cylinder Y position
-    const cylPosYN = canvasHeight*(3/5) + 20;    // Numeric Solution Cylinder Y position
+    const cylPosYA = canvasHeight*(1/4) + 10;   // Analytic Solution Cylinder Y position
+    const cylPosYN = canvasHeight*(3/5) + 20;   // Numeric Solution Cylinder Y position
     const cylLength = 500;
     const cylRadX = 15;
     const cylRadY = 75;
@@ -63,7 +68,7 @@
     const pixOffSetYA = cylPosYA - 65;
     const pixOffSetYN = cylPosYN - 65;
 
-    // Numerical method constants
+    // Discretized and equation constants
     const heatK = 1;    // Thermal diffusivity
     const heatDX = 1;   // Space step
     const heatDT = 0.2;   // Time step
@@ -254,14 +259,13 @@ function HeatSetup()
     // Initial Conditions of temperature arrays of LENGTH 90
     tempA[0] = 0;
     tempA[89] = 0;
+    tempB[0] = 0;
+    tempB[89] = 0;
 
     for(let i = 1; i < (tempA.length-1); i++)
     {
         tempA[i] = 255; // Everything else begins at max temperature
     }
-
-    tempB[0] = 0;
-    tempB[89] = 0;
 
     // Draw Cylinders for simulation
     DrawCylinder(cylPosX, cylPosYA, cylLength, cylRadX, cylRadY);
@@ -270,27 +274,41 @@ function HeatSetup()
 
 function HeatDraw()
 {
-    // Analytical Solution
+    //-----Analytical Solution-----
 
     // Calculate next temp:
-    // for(let i = 0; i < 26; i++)
-    // {
-    //     for(let j = 0; j < tempA.length; j++)
-    //     {
-    //         push();
-    //         noStroke();
-    //         fill(255,0,255);    // Purple
-    //         rect((pixOffSetX + j*pixSide), (pixOffSetYA + i*pixSide), pixSide, pixSide);
-    //         pop();
-    //     }
-    // }
+    //for(let i = 1; i < (tempA.length-1); i++)
+    for(let i = 0; i < tempA.length; i++)
+    {
+        tempC[i] = 0;
+        for(let n = 1; n < maxN; n++)
+        {
+            if(n % 2 == 1)  // Only allow the odd terms through
+            {
+                tempC[i] += (1020/PI)*(1/n)*((Math.E)**(-heatK*((PI*n)**2)*heatDTCounter/8100))*sin(n*PI*i/90);
+            }
+
+        }
+
+    }
+
+    // Go forwards in time alongside numerical solution
+    heatDTCounter++;
 
     // Paint pixels:
-
-    // for()
-    // {}
-
-    // Numerical Solution
+    for(let i = 0; i < 26; i++)
+    {
+        for(let j = 0; j < tempA.length; j++)
+        {
+            push();
+            noStroke();
+            fill(tempC[j], 0, (255-tempC[j]));
+            rect((pixOffSetX + j*pixSide), (pixOffSetYA + i*pixSide), pixSide, pixSide);
+            pop();
+        }
+    }
+    
+    //-----Numerical Solution-----
 
     // Paint pixels: (starts with initial conditions done)
     for(let i = 0; i < 26; i++)
@@ -302,8 +320,6 @@ function HeatDraw()
             fill(tempA[j], 0, (255-tempA[j]));
             rect((pixOffSetX + j*pixSide), (pixOffSetYN + i*pixSide), pixSide, pixSide);
             pop();
-
-
         }
     }
 
@@ -319,8 +335,6 @@ function HeatDraw()
         tempA[i] = tempB[i];
         console.log("i = " + i + ": " + tempA[i]);
     }
-
-
 }
 
 function UIArrayClear()
@@ -360,6 +374,10 @@ function BackToMenuButton()
     // Behavior when clicked
     btmButton.mousePressed(() =>
         {
+            if(currentLevel == "heat")
+            {
+                heatDTCounter = 0;
+            }
             UIArrayClear()          // Clear button
             currentLevel = "menu";  // Used for draw function for menu
             MenuSetup();            // Return to menu
