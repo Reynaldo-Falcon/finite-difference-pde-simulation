@@ -43,6 +43,7 @@
 
 // Heat equation related
 
+    // Numerical method time step n (A) and n+1 (B)
     let tempA = []; // Actual Temperature
     let tempB = []; // Next Temperature
 
