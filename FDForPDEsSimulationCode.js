@@ -312,7 +312,7 @@ function HeatDraw()
         fill(255);  // White text
         text(tempC[tempValues[i]].toFixed(1), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYA + cylRadY*2 + 10));  // Rounded to first decimal
         text(tempA[tempValues[i]].toFixed(1), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYN + cylRadY*2 + 10));  // Rounded to first decimal
-        text((tempC[tempValues[i]] - tempA[tempValues[i]]).toFixed(1), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYN + cylRadY*3));  // Rounded to first decimal
+        text((tempC[tempValues[i]] - tempA[tempValues[i]]).toFixed(3), (pixOffSetX + tempValues[i]*pixSide), (pixOffSetYN + cylRadY*3));  // Rounded to first decimal
         pop();
     }
 
