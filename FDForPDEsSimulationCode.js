@@ -283,7 +283,7 @@ function HeatDraw()
         for(let n = 0; n < maxN; n++)
         {
             // Analytical Sol.
-            tempC[i] += (1020/PI)*(1/(2*n + 1))*((Math.E)**(-heatK*((PI*(2*n + 1))**2)*(heatDTCounter*heatDT)/8100))*sin((2*n + 1)*PI*i/89);    // L changed to 89 in sine for the boundary conditions to truly work!
+            tempC[i] += (1020/PI)*(1/(2*n + 1))*((Math.E)**(-heatK*((PI*(2*n + 1))**2)*(heatDTCounter*heatDT)/7921))*sin((2*n + 1)*PI*i/89);    // L changed to 89 in sine for the boundary conditions to truly work!
         }
     }
 
